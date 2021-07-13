@@ -44,6 +44,12 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <artifactSet>
+                              <excludes>
+                                    <exclude>org.graalvm.nativeimage:*</exclude>
+                                    <exclude>*:*:tar.gz:</exclude>
+                                </excludes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -56,6 +62,11 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.65</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.nativeimage</groupId>
+            <artifactId>svm</artifactId>
+            <version>21.1.0</version>
         </dependency>
     </dependencies>
 

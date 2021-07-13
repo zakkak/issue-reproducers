@@ -1,14 +1,21 @@
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import java.security.Provider;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 
 public class Main {
 
     public static void main(String[] args) {
         Security.addProvider(new BouncyCastleProvider());
-        Provider.Service service = Security.getProvider("BC").getService("Cipher", "RSA");
-        assert service != null;
-        System.out.println(service.getClassName());
+
+        try {
+            Cipher rsaInstance = Cipher.getInstance("RSA", "BC");
+            System.out.println(rsaInstance.getAlgorithm());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
     }
 }
