@@ -1,13 +1,14 @@
-# Reproducer for native-image issue with bouncycastle provider
+# Reproducer for native-image issue with SunSasl provider
 
 ```
 cd /tmp
-git clone --branch bouncycastle-services-not-included https://github.com/zakkak/issue-reproducers bouncycastle-services-not-included
-cd bouncycastle-services-not-included
+git clone --branch sasl-services-not-included https://github.com/zakkak/issue-reproducers reproducers
+cd reproducers
 mvn package
-java -agentlib:native-image-agent=config-output-dir=META-INF/native-image -jar target/graal-issue-bouncycastle-1.0-SNAPSHOT.jar
-native-image --initialize-at-build-time \
+export JAVA_HOME=/opt/jvms/graalvm-ce-java11-21.2.0
+$JAVA_HOME/bin/java -agentlib:native-image-agent=config-output-dir=META-INF/native-image -jar target/reproducer-1.0-SNAPSHOT.jar
+$JAVA_HOME/bin/native-image --initialize-at-build-time \
   --no-fallback -H:+ReportExceptionStackTraces \
-  -jar target/graal-issue-bouncycastle-1.0-SNAPSHOT.jar
-./graal-issue-bouncycastle-1.0-SNAPSHOT
+  -jar target/reproducer-1.0-SNAPSHOT.jar
+./reproducer-1.0-SNAPSHOT
 ```

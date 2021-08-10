@@ -1,20 +1,21 @@
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslClient;
+import javax.security.sasl.SaslException;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-        Security.addProvider(new BouncyCastleProvider());
-
+        String[] mechanisms = new String[]{"DIGEST-MD5"};
+        String authzid = "";
+        String protocol = "HTTPS";
+        String serverName = "test";
+        Map<String, ?> props = null;
+        CallbackHandler callbackHandler = callbacks -> { };
         try {
-            Cipher rsaInstance = Cipher.getInstance("RSA", "BC");
-            System.out.println(rsaInstance.getAlgorithm());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            SaslClient sc = Sasl.createSaslClient(mechanisms, authzid, protocol, serverName, props, callbackHandler);
+        } catch (SaslException e) {
             e.printStackTrace();
         }
     }
