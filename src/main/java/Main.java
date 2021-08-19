@@ -8,9 +8,8 @@ import java.io.ObjectOutputStream;
 public class Main {
 
     public static void main(String[] args) {
-        // we don't test serialization for GraalVM < 21.3
-        if (Version.getCurrent().compareTo(21, 3) < 0) {
-            System.out.println("Please use GraalVM >21.3");
+        if (Version.getCurrent().compareTo(21, 2) < 0) {
+            System.out.println("Please use GraalVM >=21.2");
             return;
         }
 
