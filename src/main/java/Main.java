@@ -1,20 +1,39 @@
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.graalvm.home.Version;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Main {
 
     public static void main(String[] args) {
-        Security.addProvider(new BouncyCastleProvider());
+        // we don't test serialization for GraalVM < 21.3
+        if (Version.getCurrent().compareTo(21, 3) < 0) {
+            System.out.println("Please use GraalVM >21.3");
+            return;
+        }
 
         try {
-            Cipher rsaInstance = Cipher.getInstance("RSA", "BC");
-            System.out.println(rsaInstance.getAlgorithm());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            SomeSerializationObject instance = new SomeSerializationObject();
+            instance.setPerson(new Person("Sheldon"));
+            ExternalizablePerson ep = new ExternalizablePerson();
+            ep.setName("Sheldon 2.0");
+            instance.setExternalizablePerson(ep);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(out);
+            os.writeObject(instance);
+            ByteArrayInputStream bais = new ByteArrayInputStream(out.toByteArray());
+            ObjectInputStream is = new ObjectInputStream(bais);
+            SomeSerializationObject result = (SomeSerializationObject) is.readObject();
+            if (result.getPerson().getName().equals("Sheldon")
+                    && result.getExternalizablePerson().getName().equals("Sheldon 2.0")) {
+                System.out.println("OK");
+            } else {
+                System.out.println("Ooops");
+            }
+        } catch (Exception e) {
+            System.out.println("Ooops2");
             e.printStackTrace();
         }
     }
