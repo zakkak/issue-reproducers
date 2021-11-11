@@ -1,22 +1,24 @@
-import java.lang.annotation.Annotation;
-import java.lang.reflect.RecordComponent;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.function.Function;
 
 public class Main {
 
 	public static void main(String[] args) {
-		RecordComponent[] recordComponents = F.class.getRecordComponents();
-		for (RecordComponent component: recordComponents) {
-			System.out.println(component);
-			Annotation[] annotations = component.getAnnotations();
-			for (Annotation annotation : annotations) {
-				System.out.println(annotation);
-			}
+		try {
+			Class clazz = Object.class;
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+			MethodHandle constructorHandle = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+	  
+			CallSite site = LambdaMetafactory.metafactory(lookup, "apply", MethodType.methodType(Function.class),
+				constructorHandle.type().generic(), constructorHandle, constructorHandle.type());
+  
+			System.out.println(site);
+    	} catch (Throwable t) {
+			System.out.println("FAILED");
 		}
-
-		F x = new F("x");
-		System.out.println(x);
-	}
-
-	static record F(String name) {
-	}
+    }
 }
