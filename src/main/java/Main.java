@@ -1,40 +1,18 @@
-import org.graalvm.home.Version;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
+import java.net.URL;
 
 public class Main {
 
-    public static void main(String[] args) {
-        // we don't test serialization for GraalVM < 21.3
-        if (Version.getCurrent().compareTo(21, 3) < 0) {
-            System.out.println("Please use GraalVM >21.3");
-            return;
-        }
-
-        try {
-            SomeSerializationObject instance = new SomeSerializationObject();
-            instance.setPerson(new Person("Sheldon"));
-            ExternalizablePerson ep = new ExternalizablePerson();
-            ep.setName("Sheldon 2.0");
-            instance.setExternalizablePerson(ep);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ObjectOutputStream os = new ObjectOutputStream(out);
-            os.writeObject(instance);
-            ByteArrayInputStream bais = new ByteArrayInputStream(out.toByteArray());
-            ObjectInputStream is = new ObjectInputStream(bais);
-            SomeSerializationObject result = (SomeSerializationObject) is.readObject();
-            if (result.getPerson().getName().equals("Sheldon")
-                    && result.getExternalizablePerson().getName().equals("Sheldon 2.0")) {
-                System.out.println("OK");
-            } else {
-                System.out.println("Ooops");
-            }
-        } catch (Exception e) {
-            System.out.println("Ooops2");
-            e.printStackTrace();
+    public static void main(String[] args) throws IOException {
+        ClassLoader cl = (new Main()).getClass().getClassLoader();
+        URL url = cl.getResource("META-INF/");
+        URL url2 = cl.getResource("META-INF/./");
+        System.out.println("url = " + url);
+        System.out.println("url2 = " + url2);
+        if (url.toString().endsWith("/") && url2 == null) {
+            System.out.println("SUCCESS");
+        } else {
+            System.out.println("FAILURE");
         }
     }
 }
