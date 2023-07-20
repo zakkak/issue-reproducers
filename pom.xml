@@ -49,6 +49,7 @@
                                     <manifestEntries>
                                         <Main-Class>Main</Main-Class>
                                         <Build-Number>1.0</Build-Number>
+                                        <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
