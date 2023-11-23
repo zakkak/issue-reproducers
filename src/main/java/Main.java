@@ -1,33 +1,18 @@
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import java.lang.reflect.Field;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-
-// import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
+import io.netty.util.internal.PlatformDependent;
 
 public class Main {
 
-    static {
-        System.out.println("Hello!!!!");
-
-        // Too late... providers need to be registered before the analysis, but
-        // static initialization takes plave after it.
-
-        Security.addProvider(new BouncyCastleProvider());
-    }
-
     public static void main(String[] args) {
-
         try {
-            // KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
-            // keyPairGenerator.generateKeyPair();
-            // System.out.println("Success");
-            Cipher rsaInstance = Cipher.getInstance("AES/CBC/PKCS7Padding", "BC");
-            System.out.println(rsaInstance.getAlgorithm());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | NoSuchProviderException e) {
+            
+            Field maxDirectMemoryField = PlatformDependent.class.getDeclaredField("MAX_DIRECT_MEMORY");
+            maxDirectMemoryField.setAccessible(true);
+            long maxDirectMemory = (long) maxDirectMemoryField.get(null);
+            System.out.println("maxDirectMemory= " + maxDirectMemory/1024/1024/1024 + " GB");
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
