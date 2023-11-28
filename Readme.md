@@ -1,52 +1,42 @@
 # Reproducer for native-image issue with netty plarform dependent fields
 
+NOTE: This is using quarkus version 999-SNAPSHOT, i.e. depends on a local build of the Quarkus `main` branch.
+
 ```shell
 cd /tmp
-git clone --branch 2023-11-23-quarkus-17839-reproducer-netty-platform-dependent https://github.com/zakkak/issue-reproducers reproducer
+git clone --branch 2023-11-28-quarkus-17839-reproducer-netty-platform-dependent-in-quarkus https://github.com/zakkak/issue-reproducers reproducer
 cd reproducer
-mvn package
-java -jar ./target/reproducer-1.0-SNAPSHOT.jar
+mvn clean package -Dnative
+java -jar ./target/code-with-quarkus-1.0.0-SNAPSHOT-native-image-source-jar/code-with-quarkus-1.0.0-SNAPSHOT-runner.jar
 ```
 
 Depending on the memory of the system we are running on this prints something like:
 
 ```shell
+maxDirectMemoryStatic= 15 GB
 maxDirectMemory= 15 GB
 ```
 
-Building a native image from it:
+Running the corresponding native image:
 
 ```shell
-native-image --initialize-at-build-time=. \
-  --no-fallback \
-  -jar target/reproducer-1.0-SNAPSHOT.jar
+./target/code-with-quarkus-1.0.0-SNAPSHOT-runner
 ```
 
-during the build `native-image` informs us about the resources being used, e.g.:
-
+we get:
 
 ```shell
-Build resources:
- - 7.70GB of memory (12.4% of 61.93GB system memory, determined at start)
- - 32 thread(s) (100.0% of 32 available processor(s), determined at start)
+maxDirectMemoryStatic= 8 GB
+maxDirectMemory= 8 GB
 ```
 
-and the resulting binary prints:
+If we increase the max heap size at build time it also affects the `maxDirectMemory` reported by netty:
 
 ```shell
-maxDirectMemory= 7 GB
+mvn clean package -Dnative -Dquarkus.native.native-image-xmx=32g
 ```
 
-If we set `-Xmx` we can control the amount of memory used at build time which also affects the `maxDirectMemory` reported by netty:
-
-```shell
-native-image --initialize-at-build-time=. \
-  -J-Xmx32g \
-  --no-fallback \
-  -jar target/reproducer-1.0-SNAPSHOT.jar
-```
-
-during build this will print:
+during build time this will print:
 
 ```shell
 Build resources:
@@ -57,18 +47,21 @@ Build resources:
 and running the binary prints:
 
 ```shell
+maxDirectMemoryStatic= 28 GB
 maxDirectMemory= 28 GB
 ```
 
 Even if we move the binary to a different machine, e.g. one printing:
 
 ```shell
+maxDirectMemoryStatic= 3 GB
 maxDirectMemory= 3 GB
 ```
 
 when run in HotSpot, the native executable still prints:
 
 ```shell
+maxDirectMemoryStatic= 28 GB
 maxDirectMemory= 28 GB
 ```
 
