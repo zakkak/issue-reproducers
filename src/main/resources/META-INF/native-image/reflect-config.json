@@ -1,0 +1,31 @@
+[
+{
+  "name":"org.jctools.queues.BaseLinkedQueuePad2",
+  "fields":[{"name":"b001"}, {"name":"b002"}, {"name":"b003"}, {"name":"b004"}, {"name":"b005"}]
+},
+{
+  "name":"org.jctools.queues.BaseLinkedQueueConsumerNodeRef",
+  "fields":[{"name":"consumerNode"}]
+},
+{
+  "name":"org.jctools.queues.BaseLinkedQueueProducerNodeRef",
+  "fields":[{"name":"producerNode"}]
+},
+{
+  "name":"org.jctools.queues.LinkedQueueNode",
+  "fields":[{"name":"next"}]
+},
+{
+  "name":"org.jctools.queues.unpadded.BaseLinkedUnpaddedQueueConsumerNodeRef",
+  "fields":[{"name":"consumerNode"}]
+},
+{
+  "name":"org.jctools.queues.unpadded.BaseLinkedUnpaddedQueueProducerNodeRef",
+  "fields":[{"name":"producerNode"}]
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}],
+  "methods":[{"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }]
+}
+]
