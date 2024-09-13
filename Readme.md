@@ -1,31 +1,29 @@
 # Reproducer for native-image issue
 
+Reproducer of https://github.com/oracle/graal/issues/1725
+
 ```
 cd /tmp
-git clone --branch unreachable-unresolved-code https://github.com/zakkak/issue-reproducers reproducers
+git clone --branch 2024-09-13-delete-no-class-def-found https://github.com/zakkak/issue-reproducers reproducers
 cd reproducers
 mvn package
-export JAVA_HOME=/opt/jvms/graalvm-ce-java11-22.1.0
 # run with Unreachable on the classpath
-$JAVA_HOME/bin/java -cp target/classes Main
+java -cp target/classes Main
 # run with Unreachable not on the classpath
-$JAVA_HOME/bin/java \
+java \
   -jar target/reproducer-1.0-SNAPSHOT.jar
 # generate native-image with Unreachable not on the classpath
-$JAVA_HOME/bin/native-image \
-  --link-at-build-time \
-  --initialize-at-build-time=. \
+native-image \
+  --no-fallback \
+  -H:+ReportExceptionStackTraces \
   -jar target/reproducer-1.0-SNAPSHOT.jar
-# Run the generated image
+# Run binary
 ./reproducer-1.0-SNAPSHOT
-```
-
-To generate the IGV graph for main use
-```
-native-image --initialize-at-build-time=. --no-fallback -H:Dump=:1 -H:MethodFilter=Main.main -jar target/reproducer-1.0-SNAPSHOT.jar
-```
-
-and render it with
-```
-seafoam graal_dumps/2022.06.17.16.02.27.868/SubstrateHostedCompilation-3596\[Main.main\(String\[\]\)void\].bgv:0 render
+# generate native-image with Unreachable not on the classpath and pass --report-unsupported-elements-at-runtime
+native-image \
+  --no-fallback \
+  --report-unsupported-elements-at-runtime \
+  -H:+ReportExceptionStackTraces \
+  -jar target/reproducer-1.0-SNAPSHOT.jar
+# Build fails
 ```
