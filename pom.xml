@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>nativeimage</artifactId>
-            <version>23.1.0</version>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.6.2.jre11</version>
         </dependency>
     </dependencies>
 

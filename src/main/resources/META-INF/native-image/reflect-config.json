@@ -1,0 +1,8 @@
+[
+    {
+        "name": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+        "methods": [
+          {"name": "connect", "parameterTypes": ["java.lang.String", "java.util.Properties"]}
+        ]
+    }
+]
