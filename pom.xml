@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>12.6.2.jre11</version>
+            <groupId>com.aayushatharva.brotli4j</groupId>
+            <artifactId>brotli4j</artifactId>
+            <version>1.17.0</version>
         </dependency>
     </dependencies>
 
@@ -39,6 +39,7 @@
                                     <manifestEntries>
                                         <Main-Class>Main</Main-Class>
                                         <Build-Number>1.0</Build-Number>
+                                        <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
