@@ -1,6 +1,6 @@
 # Reproducer for native-image issue
 
-Reproducer of https://github.com/oracle/graal/issues/
+Reproducer of https://github.com/oracle/graal/issues/10008
 
 ```
 cd /tmp
