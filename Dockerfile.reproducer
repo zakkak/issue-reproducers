@@ -1,0 +1,48 @@
+FROM eclipse-temurin:21-jammy
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    ca-certificates \
+    apt-transport-https \
+    lsb-release \
+    gnupg \
+    software-properties-common
+
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+RUN apt-get update && apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin \
+    fuse-overlayfs
+
+RUN apt-get install -y \
+    zip \
+    unzip \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -s "https://get.sdkman.io" | bash \
+    && bash -c "source /root/.sdkman/bin/sdkman-init.sh && sdk install maven"
+
+ENV PATH="/root/.sdkman/candidates/maven/current/bin:$PATH"
+
+RUN useradd -u 645 -m -s /bin/bash builder
+
+RUN usermod -aG docker builder
+
+RUN echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER builder
+WORKDIR /home/builder
+
+COPY --chown=builder:builder code-with-quarkus/ /home/builder/code-with-quarkus/
+COPY --chown=builder:builder reproduce-issue.sh /home/builder/code-with-quarkus/
+
+WORKDIR /home/builder/code-with-quarkus
+
+CMD ["/bin/bash"]
