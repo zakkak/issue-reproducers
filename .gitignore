@@ -1,0 +1,5 @@
+/target/
+/logs/
+/complete
+/reproducer-1.0-SNAPSHOT
+/svm_err_*.md
